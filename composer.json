@@ -8,6 +8,13 @@
             "email": "alejandro@alejandrocelaya.com"
         }
     ],
+    "keywords": [
+        "slim",
+        "zend framework",
+        "zf2",
+        "dic",
+        "dependency injection"
+    ],
     "require": {
         "php": ">=5.4.0",
         "zendframework/zend-servicemanager": "~2.2",
