@@ -1,0 +1,30 @@
+{
+    "name": "acelaya/slim-container-sm",
+    "description": "A Slim framework container wrapping a ZF2 ServiceManager",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Alejandro Celaya",
+            "email": "alejandro@alejandrocelaya.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.4.0",
+        "zendframework/zend-servicemanager": "~2.2",
+        "slim/slim": "~2.4"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "~4.0",
+        "squizlabs/php_codesniffer": "~1.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Acelaya\\SlimContainerSm\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Acelaya\\SlimContainerSm\\Test\\": "tests/"
+        }
+    }
+}
