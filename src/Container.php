@@ -10,7 +10,9 @@ use Zend\ServiceManager\ServiceManager;
  * @author Alejandro Celaya Alastrué
  * @link http://www.alejandrocelaya.com
  */
-class Container extends Set
+class Container extends Set implements
+    ServiceManagerAwareInterface,
+    SlimContainerConsumibleInterface
 {
     /**
      * @var ServiceManager
@@ -19,8 +21,7 @@ class Container extends Set
 
     public function __construct(ServiceManager $sm = null)
     {
-        $this->sm = $sm ?: new ServiceManager();
-        $this->sm->setAllowOverride(true);
+        $this->setServiceManager($sm ?: new ServiceManager());
     }
 
     /**
@@ -132,5 +133,34 @@ class Container extends Set
     public function protect(\Closure $callable)
     {
         throw new BadMethodCallException(sprintf('Method %s not applicable in the scope of a ServiceManager', __METHOD__));
+    }
+
+    /**
+     * @param ServiceManager $sm
+     * @return mixed
+     */
+    public function setServiceManager(ServiceManager $sm)
+    {
+        $this->sm = $sm;
+        $this->sm->setAllowOverride(true);
+    }
+
+    /**
+     * @return ServiceManager
+     */
+    public function getServiceManager()
+    {
+        return $this->sm;
+    }
+
+    /**
+     * Makes this to consume the services defined in provided container
+     *
+     * @param Set $container
+     * @return mixed
+     */
+    public function consumeSlimContainer(Set $container)
+    {
+        $this->replace($container->all());
     }
 }
