@@ -33,8 +33,7 @@ class Container extends Set implements
     public function set($key, $value)
     {
         if (is_callable($value)) {
-            $this->sm->setFactory($key, new CallbackWrapper($this, $value));
-            $this->sm->setShared($key, false);
+            $this->registerFactory($key, $value, false);
         } else {
             $this->sm->setService($key, $value);
         }
@@ -130,9 +129,7 @@ class Container extends Set implements
     public function singleton($key, $value)
     {
         if (is_callable($value)) {
-            // Create a factory wrapping provided callable
-            $this->sm->setFactory($key, new CallbackWrapper($this, $value));
-            $this->sm->setShared($key, true);
+            $this->registerFactory($key, $value);
         } else {
             $this->sm->setService($key, $value);
         }
@@ -180,5 +177,18 @@ class Container extends Set implements
             // We asume all callables are singletons, but this should be improved
             $this->singleton($key, $value);
         }
+    }
+
+    /**
+     * Registers a factory wrapping a Slim factory into a ZF2 factory
+     *
+     * @param $key
+     * @param callable $callable
+     * @param bool $shared
+     */
+    protected function registerFactory($key, callable $callable, $shared = true)
+    {
+        $this->sm->setFactory($key, new CallbackWrapper($this, $callable));
+        $this->sm->setShared($key, $shared);
     }
 }
