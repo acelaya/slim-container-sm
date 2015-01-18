@@ -124,7 +124,7 @@ class Container extends Set implements
     public function singleton($key, $value)
     {
         if (is_callable($value)) {
-            $value = call_user_func($value);
+            $value = call_user_func($value, $this);
         }
 
         // Create a service normally
