@@ -36,6 +36,11 @@ class ContainerTest extends TestCase
         $expected = new \stdClass();
         $this->container->set('foo', $expected);
         $this->assertSame($expected, $this->sm->get('foo'));
+
+        $this->container->set('bar', function () {
+            return new \stdClass();
+        });
+        $this->assertInstanceOf('stdClass', $this->sm->get('bar'));
     }
 
     public function testGet()
@@ -141,16 +146,6 @@ class ContainerTest extends TestCase
         $this->assertSame($expected, $this->container->get('foo'));
     }
 
-    /**
-     * @expectedException \Acelaya\SlimContainerSm\Exception\BadMethodCallException
-     */
-    public function testProtect()
-    {
-        $this->container->protect(function () {
-
-        });
-    }
-
     public function testConsumeSlimContainer()
     {
         $anoterContainer = new Set();
@@ -159,10 +154,26 @@ class ContainerTest extends TestCase
         $anoterContainer->baz = function ($c) {
             return 'Hello';
         };
+        $anoterContainer->singleton('foobar', function ($c) {
+            return 'Hello';
+        });
+        $anoterContainer->barfoo = [$this, 'fakeMathod'];
         $this->container->consumeSlimContainer($anoterContainer);
+
         $this->assertTrue($this->sm->has('foo'));
         $this->assertTrue($this->container->has('foo'));
         $this->assertTrue($this->sm->has('bar'));
         $this->assertTrue($this->container->has('bar'));
+        $this->assertTrue($this->sm->has('baz'));
+        $this->assertTrue($this->container->has('baz'));
+        $this->assertTrue($this->sm->has('foobar'));
+        $this->assertTrue($this->container->has('foobar'));
+        $this->assertTrue($this->sm->has('barfoo'));
+        $this->assertTrue($this->container->has('barfoo'));
+    }
+
+    public function fakeMathod()
+    {
+
     }
 }

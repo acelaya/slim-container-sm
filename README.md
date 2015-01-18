@@ -53,4 +53,4 @@ This library is very useful with [slimcontroller](https://github.com/fortrabbit/
 
 ### Invalid methods
 
-Because of the way the ServiceManager works, there are two methods in `Slim\Helper\Set` that can't be used, `all` and `protect`. Those methods will throw a `Acelaya\SlimContainerSm\Exception\BadMethodCallException`.
+Because of the way the ServiceManager works, there is one method in `Slim\Helper\Set` that can't be used, the method `all`. That method will throw a `Acelaya\SlimContainerSm\Exception\BadMethodCallException`.

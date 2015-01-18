@@ -2,7 +2,7 @@
 namespace Acelaya\SlimContainerSm;
 
 use Acelaya\SlimContainerSm\Exception\BadMethodCallException;
-use Acelaya\SlimContainerSm\Factory\SingletonWrapper;
+use Acelaya\SlimContainerSm\Factory\CallbackWrapper;
 use Slim\Helper\Set;
 use Zend\ServiceManager\ServiceManager;
 
@@ -32,7 +32,11 @@ class Container extends Set implements
      */
     public function set($key, $value)
     {
-        $this->sm->setService($key, $value);
+        if (is_callable($value)) {
+            $this->registerFactory($key, $value, false);
+        } else {
+            $this->sm->setService($key, $value);
+        }
     }
 
     /**
@@ -61,13 +65,7 @@ class Container extends Set implements
      */
     public function keys()
     {
-        $services = $this->sm->getRegisteredServices();
-        return array_merge(
-            $services['invokableClasses'],
-            $services['factories'],
-            $services['aliases'],
-            $services['instances']
-        );
+        return array_values($this->sm->getCanonicalNames());
     }
 
     /**
@@ -125,24 +123,10 @@ class Container extends Set implements
     public function singleton($key, $value)
     {
         if (is_callable($value)) {
-            // Create a factory wrapping provided callable
-            $this->sm->setFactory($key, new SingletonWrapper($this, $value));
-            $this->sm->setShared($key, true);
+            $this->registerFactory($key, $value);
         } else {
-            $this->set($key, $value);
+            $this->sm->setService($key, $value);
         }
-    }
-
-    /**
-     * Protect closure from being directly invoked
-     * @param Callable $callable A closure to keep from being invoked and evaluated
-     * @return Callable
-     */
-    public function protect(\Closure $callable)
-    {
-        throw new BadMethodCallException(
-            sprintf('Method %s not applicable in the scope of a ServiceManager', __METHOD__)
-        );
     }
 
     /**
@@ -172,12 +156,31 @@ class Container extends Set implements
     public function consumeSlimContainer(Set $container)
     {
         foreach ($container as $key => $value) {
-            // We asume all callables are singletones, but this should be improved
-            if (is_callable($value)) {
-                $this->singleton($key, $value);
+            if ($value instanceof \Closure) {
+                // Try to determin if this belongs to a singleton or not
+                $refFunc = new \ReflectionFunction($value);
+                // Slim singletons have a static 'object' variable
+                $shared = in_array('object', $refFunc->getStaticVariables());
+                $this->registerFactory($key, $value, $shared);
+            } elseif (is_callable($value)) {
+                // Register as non-shared factories any other callable
+                $this->registerFactory($key, $value, false);
             } else {
-                $this->set($key, $value);
+                $this->sm->setService($key, $value);
             }
         }
+    }
+
+    /**
+     * Registers a factory wrapping a Slim factory into a ZF2 factory
+     *
+     * @param $key
+     * @param callable $callable
+     * @param bool $shared
+     */
+    protected function registerFactory($key, callable $callable, $shared = true)
+    {
+        $this->sm->setFactory($key, new CallbackWrapper($this, $callable));
+        $this->sm->setShared($key, $shared);
     }
 }
