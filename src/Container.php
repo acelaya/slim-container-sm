@@ -61,7 +61,12 @@ class Container extends Set implements
     public function keys()
     {
         $services = $this->sm->getRegisteredServices();
-        return array_merge($services['invokableClasses'], $services['factories'], $services['aliases'], $services['instances']);
+        return array_merge(
+            $services['invokableClasses'],
+            $services['factories'],
+            $services['aliases'],
+            $services['instances']
+        );
     }
 
     /**
@@ -133,7 +138,9 @@ class Container extends Set implements
      */
     public function protect(\Closure $callable)
     {
-        throw new BadMethodCallException(sprintf('Method %s not applicable in the scope of a ServiceManager', __METHOD__));
+        throw new BadMethodCallException(
+            sprintf('Method %s not applicable in the scope of a ServiceManager', __METHOD__)
+        );
     }
 
     /**

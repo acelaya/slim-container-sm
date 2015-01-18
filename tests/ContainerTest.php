@@ -110,7 +110,9 @@ class ContainerTest extends TestCase
         $this->container->bar = new \stdClass();
         $this->sm->setService('baz', new \stdClass());
         $this->sm->setAlias('alias', 'baz');
-        $this->sm->setFactory('factory', function ($sm) {});
+        $this->sm->setFactory('factory', function ($sm) {
+
+        });
         $this->assertCount(5, $this->container);
     }
 
@@ -144,7 +146,9 @@ class ContainerTest extends TestCase
      */
     public function testProtect()
     {
-        $this->container->protect(function () {});
+        $this->container->protect(function () {
+
+        });
     }
 
     public function testConsumeSlimContainer()
