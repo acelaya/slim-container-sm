@@ -36,6 +36,11 @@ class ContainerTest extends TestCase
         $expected = new \stdClass();
         $this->container->set('foo', $expected);
         $this->assertSame($expected, $this->sm->get('foo'));
+
+        $this->container->set('bar', function () {
+            return new \stdClass();
+        });
+        $this->assertInstanceOf('stdClass', $this->sm->get('bar'));
     }
 
     public function testGet()
@@ -139,16 +144,6 @@ class ContainerTest extends TestCase
             return $expected;
         });
         $this->assertSame($expected, $this->container->get('foo'));
-    }
-
-    /**
-     * @expectedException \Acelaya\SlimContainerSm\Exception\BadMethodCallException
-     */
-    public function testProtect()
-    {
-        $this->container->protect(function () {
-
-        });
     }
 
     public function testConsumeSlimContainer()

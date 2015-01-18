@@ -136,18 +136,6 @@ class Container extends Set implements
     }
 
     /**
-     * Protect closure from being directly invoked
-     * @param Callable $callable A closure to keep from being invoked and evaluated
-     * @return Callable
-     */
-    public function protect(\Closure $callable)
-    {
-        throw new BadMethodCallException(
-            sprintf('Method %s not applicable in the scope of a ServiceManager', __METHOD__)
-        );
-    }
-
-    /**
      * @param ServiceManager $sm
      * @return mixed
      */
