@@ -1,8 +1,11 @@
 # Slim Container - ServiceManager
 
-[![Build Status](https://travis-ci.org/acelaya/slim-container-sm.svg?branch=master)](https://travis-ci.org/acelaya/slim-container-sm)
+[![Build Status](https://travis-ci.org/acelaya/slim-container-sm.svg)](https://travis-ci.org/acelaya/slim-container-sm)
 [![Code Coverage](https://scrutinizer-ci.com/g/acelaya/slim-container-sm/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/acelaya/slim-container-sm/?branch=master)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/acelaya/slim-container-sm/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/acelaya/slim-container-sm/?branch=master)
+[![Latest Stable Version](https://poser.pugx.org/acelaya/slim-container-sm/v/stable.png)](https://packagist.org/packages/acelaya/slim-container-sm)
+[![Total Downloads](https://poser.pugx.org/acelaya/slim-container-sm/downloads.png)](https://packagist.org/packages/acelaya/slim-container-sm)
+[![License](https://poser.pugx.org/acelaya/slim-container-sm/license.png)](https://packagist.org/packages/acelaya/slim-container-sm)
 
 A Slim framework container wrapping a ZF2 ServiceManager so that services can be pulled from it.
 
