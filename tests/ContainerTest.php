@@ -156,6 +156,9 @@ class ContainerTest extends TestCase
         $anoterContainer = new Set();
         $anoterContainer->foo = [];
         $anoterContainer->bar = new \stdClass();
+        $anoterContainer->baz = function ($c) {
+            return 'Hello';
+        };
         $this->container->consumeSlimContainer($anoterContainer);
         $this->assertTrue($this->sm->has('foo'));
         $this->assertTrue($this->container->has('foo'));
