@@ -2,6 +2,7 @@
 namespace Acelaya\SlimContainerSm;
 
 use Acelaya\SlimContainerSm\Exception\BadMethodCallException;
+use Acelaya\SlimContainerSm\Factory\SingletonWrapper;
 use Slim\Helper\Set;
 use Zend\ServiceManager\ServiceManager;
 
@@ -124,11 +125,12 @@ class Container extends Set implements
     public function singleton($key, $value)
     {
         if (is_callable($value)) {
-            $value = call_user_func($value, $this);
+            // Create a factory wrapping provided callable
+            $this->sm->setFactory($key, new SingletonWrapper($this, $value));
+            $this->sm->setShared($key, true);
+        } else {
+            $this->set($key, $value);
         }
-
-        // Create a service normally
-        $this->set($key, $value);
     }
 
     /**
@@ -169,6 +171,13 @@ class Container extends Set implements
      */
     public function consumeSlimContainer(Set $container)
     {
-        $this->replace($container->all());
+        foreach ($container as $key => $value) {
+            // We asume all callables are singletones, but this should be improved
+            if (is_callable($value)) {
+                $this->singleton($key, $value);
+            } else {
+                $this->set($key, $value);
+            }
+        }
     }
 }
