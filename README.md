@@ -7,7 +7,7 @@
 [![Total Downloads](https://poser.pugx.org/acelaya/slim-container-sm/downloads.png)](https://packagist.org/packages/acelaya/slim-container-sm)
 [![License](https://poser.pugx.org/acelaya/slim-container-sm/license.png)](https://packagist.org/packages/acelaya/slim-container-sm)
 
-A Slim framework container wrapping a ZF2 ServiceManager so that services can be pulled from it.
+A Slim framework container wrapping a ZF2 ServiceManager so that services can be fetched from it.
 
 ### Installation
 
