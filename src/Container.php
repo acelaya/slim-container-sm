@@ -71,12 +71,7 @@ class Container extends Set implements
      */
     public function has($key)
     {
-        if (! $this->sm->has($key)) {
-            return false;
-        }
-
-        $service = $this->sm->get($key);
-        return isset($service);
+        return $this->sm->has($key);
     }
 
     /**
@@ -93,7 +88,10 @@ class Container extends Set implements
      */
     public function clear()
     {
-        $this->data = array();
+        $services = $this->keys();
+        foreach ($services as $service) {
+            $this->set($service, null);
+        }
     }
 
     /**
@@ -115,14 +113,17 @@ class Container extends Set implements
     /**
      * Ensure a value or object will remain globally unique
      * @param string $key The value or object name
-     * @param Callable $value The closure that defines the object
+     * @param $value
      * @return mixed
      */
     public function singleton($key, $value)
     {
-        // Create a service and force it to be shared
+        if (is_callable($value)) {
+            $value = call_user_func($value);
+        }
+
+        // Create a service normally
         $this->set($key, $value);
-        $this->sm->setShared($key, true);
     }
 
     /**
