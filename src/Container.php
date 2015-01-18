@@ -2,7 +2,7 @@
 namespace Acelaya\SlimContainerSm;
 
 use Acelaya\SlimContainerSm\Exception\BadMethodCallException;
-use Acelaya\SlimContainerSm\Factory\SingletonWrapper;
+use Acelaya\SlimContainerSm\Factory\CallbackWrapper;
 use Slim\Helper\Set;
 use Zend\ServiceManager\ServiceManager;
 
@@ -32,7 +32,12 @@ class Container extends Set implements
      */
     public function set($key, $value)
     {
-        $this->sm->setService($key, $value);
+        if (is_callable($value)) {
+            $this->sm->setFactory($key, new CallbackWrapper($this, $value));
+            $this->sm->setShared($key, false);
+        } else {
+            $this->sm->setService($key, $value);
+        }
     }
 
     /**
@@ -126,10 +131,10 @@ class Container extends Set implements
     {
         if (is_callable($value)) {
             // Create a factory wrapping provided callable
-            $this->sm->setFactory($key, new SingletonWrapper($this, $value));
+            $this->sm->setFactory($key, new CallbackWrapper($this, $value));
             $this->sm->setShared($key, true);
         } else {
-            $this->set($key, $value);
+            $this->sm->setService($key, $value);
         }
     }
 
@@ -172,12 +177,8 @@ class Container extends Set implements
     public function consumeSlimContainer(Set $container)
     {
         foreach ($container as $key => $value) {
-            // We asume all callables are singletones, but this should be improved
-            if (is_callable($value)) {
-                $this->singleton($key, $value);
-            } else {
-                $this->set($key, $value);
-            }
+            // We asume all callables are singletons, but this should be improved
+            $this->singleton($key, $value);
         }
     }
 }

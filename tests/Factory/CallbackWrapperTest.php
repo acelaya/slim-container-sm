@@ -2,13 +2,13 @@
 namespace Acelaya\SlimContainerSm\Test\Factory;
 
 use Acelaya\SlimContainerSm\Container;
-use Acelaya\SlimContainerSm\Factory\SingletonWrapper;
+use Acelaya\SlimContainerSm\Factory\CallbackWrapper;
 use PHPUnit_Framework_TestCase as TestCase;
 
 class SingletonWrapperTest extends TestCase
 {
     /**
-     * @var SingletonWrapper
+     * @var CallbackWrapper
      */
     private $wrapper;
 
@@ -19,7 +19,7 @@ class SingletonWrapperTest extends TestCase
             return $expected;
         };
         $container = new Container();
-        $this->wrapper = new SingletonWrapper($container, $originalFactory);
+        $this->wrapper = new CallbackWrapper($container, $originalFactory);
         $this->assertSame($expected, call_user_func($this->wrapper, $container));
     }
 }
