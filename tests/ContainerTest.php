@@ -154,10 +154,26 @@ class ContainerTest extends TestCase
         $anoterContainer->baz = function ($c) {
             return 'Hello';
         };
+        $anoterContainer->singleton('foobar', function ($c) {
+            return 'Hello';
+        });
+        $anoterContainer->barfoo = [$this, 'fakeMathod'];
         $this->container->consumeSlimContainer($anoterContainer);
+
         $this->assertTrue($this->sm->has('foo'));
         $this->assertTrue($this->container->has('foo'));
         $this->assertTrue($this->sm->has('bar'));
         $this->assertTrue($this->container->has('bar'));
+        $this->assertTrue($this->sm->has('baz'));
+        $this->assertTrue($this->container->has('baz'));
+        $this->assertTrue($this->sm->has('foobar'));
+        $this->assertTrue($this->container->has('foobar'));
+        $this->assertTrue($this->sm->has('barfoo'));
+        $this->assertTrue($this->container->has('barfoo'));
+    }
+
+    public function fakeMathod()
+    {
+
     }
 }

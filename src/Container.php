@@ -65,13 +65,7 @@ class Container extends Set implements
      */
     public function keys()
     {
-        $services = $this->sm->getRegisteredServices();
-        return array_merge(
-            $services['invokableClasses'],
-            $services['factories'],
-            $services['aliases'],
-            $services['instances']
-        );
+        return array_values($this->sm->getCanonicalNames());
     }
 
     /**
@@ -162,8 +156,18 @@ class Container extends Set implements
     public function consumeSlimContainer(Set $container)
     {
         foreach ($container as $key => $value) {
-            // We asume all callables are singletons, but this should be improved
-            $this->singleton($key, $value);
+            if ($value instanceof \Closure) {
+                // Try to determin if this belongs to a singleton or not
+                $refFunc = new \ReflectionFunction($value);
+                // Slim singletons have a static 'object' variable
+                $shared = in_array('object', $refFunc->getStaticVariables());
+                $this->registerFactory($key, $value, $shared);
+            } elseif (is_callable($value)) {
+                // Register as non-shared factories any other callable
+                $this->registerFactory($key, $value, false);
+            } else {
+                $this->sm->setService($key, $value);
+            }
         }
     }
 
