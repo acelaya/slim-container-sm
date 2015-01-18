@@ -61,7 +61,12 @@ class Container extends Set implements
     public function keys()
     {
         $services = $this->sm->getRegisteredServices();
-        return array_merge($services['invokableClasses'], $services['factories'], $services['aliases'], $services['instances']);
+        return array_merge(
+            $services['invokableClasses'],
+            $services['factories'],
+            $services['aliases'],
+            $services['instances']
+        );
     }
 
     /**
@@ -71,12 +76,7 @@ class Container extends Set implements
      */
     public function has($key)
     {
-        if (! $this->sm->has($key)) {
-            return false;
-        }
-
-        $service = $this->sm->get($key);
-        return isset($service);
+        return $this->sm->has($key);
     }
 
     /**
@@ -93,7 +93,10 @@ class Container extends Set implements
      */
     public function clear()
     {
-        $this->data = array();
+        $services = $this->keys();
+        foreach ($services as $service) {
+            $this->set($service, null);
+        }
     }
 
     /**
@@ -115,14 +118,17 @@ class Container extends Set implements
     /**
      * Ensure a value or object will remain globally unique
      * @param string $key The value or object name
-     * @param Callable $value The closure that defines the object
+     * @param $value
      * @return mixed
      */
     public function singleton($key, $value)
     {
-        // Create a service and force it to be shared
+        if (is_callable($value)) {
+            $value = call_user_func($value);
+        }
+
+        // Create a service normally
         $this->set($key, $value);
-        $this->sm->setShared($key, true);
     }
 
     /**
@@ -132,7 +138,9 @@ class Container extends Set implements
      */
     public function protect(\Closure $callable)
     {
-        throw new BadMethodCallException(sprintf('Method %s not applicable in the scope of a ServiceManager', __METHOD__));
+        throw new BadMethodCallException(
+            sprintf('Method %s not applicable in the scope of a ServiceManager', __METHOD__)
+        );
     }
 
     /**
