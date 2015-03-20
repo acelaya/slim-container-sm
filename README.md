@@ -49,7 +49,7 @@ $app->container = $container;
 
 Once this is done, Slim will continue working with the new container as its own, and you can create more complex services using the ServiceManager.
 
-This library is very useful with [slimcontroller](https://github.com/fortrabbit/slimcontroller), a library which allows to create controllers in Slim framework as a service. In convination with this, you will be able to register Controllers in a ServiceManager.
+This library is very useful with [rka-slim-controller](https://github.com/akrabat/rka-slim-controller) and [slimcontroller](https://github.com/fortrabbit/slimcontroller), both of them libraries that allow to create controllers in Slim framework as a service. In combination with this, you will be able to register Controllers in a ServiceManager.
 
 ### Invalid methods
 
