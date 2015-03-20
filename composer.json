@@ -35,6 +35,7 @@
         }
     },
     "suggest": {
+        "akrabat/rka-slim-controller": "Allows to create controllers as a service in Slim Framework",
         "slimcontroller/slimcontroller": "Allows to create controllers as a service in Slim Framework"
     }
 }
