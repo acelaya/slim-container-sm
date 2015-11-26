@@ -22,25 +22,33 @@ This library provides a simple class, the `Acelaya\SlimContainerSm\Container` wh
 By replacing Slim's container object by this one you can make Slim framework to fetch services from the ServiceManager, which is much more advanced and configurable.
 
 ```php
+use Acelaya\SlimContainerSm\Container;
+use Slim\Slim;
+use Vendor\AnotherClass;
+use Vendor\ComplexClass;
+use Vendor\MyClass;
+use Zend\ServiceManager\Config;
+use Zend\ServiceManager\ServiceManager;
+
 // Create a ServiceManager that is going to be used by the application and add some services to it
-$sm = new \Zend\ServiceManager\ServiceManager(new \Zend\ServiceManager\Config([
+$sm = new ServiceManager(new Config([
     'invokables' => [
-        'foo' => 'Vendor\MyClass',
-        'bar' => 'Vendor\AnotherClass'
+        'foo' => MyClass::class,
+        'bar' => AnotherClass::class,
     ],
     'factories' => [
         'complex_service' => function ($sm) {
             // Do stuff...
             
-            return new \Vendor\ComplexClass();
+            return new ComplexClass();
         }
     ]
 ]));
 // Inject the ServiceManager in the new container
-$container = new \Acelaya\SlimContainerSm\Container($sm);
+$container = new Container($sm);
 
 // Create Slim object which will initialize its container
-$app = new \Slim\Slim();
+$app = new Slim();
 // Inject default Slim services into our container
 $container->consumeSlimContainer($app->container);
 // Override Slim's container with the new one
