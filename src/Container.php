@@ -22,6 +22,7 @@ class Container extends Set implements
 
     public function __construct(ServiceManager $sm = null)
     {
+        parent::__construct();
         $this->setServiceManager($sm ?: new ServiceManager());
     }
 
