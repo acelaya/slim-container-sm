@@ -23,14 +23,6 @@ class ContainerTest extends TestCase
         $this->container = new Container($this->sm);
     }
 
-    public function testServiceManagerAware()
-    {
-        $this->assertSame($this->sm, $this->container->getServiceManager());
-        $anotherSm = new ServiceManager();
-        $this->container->setServiceManager($anotherSm);
-        $this->assertSame($anotherSm, $this->container->getServiceManager());
-    }
-
     public function testSet()
     {
         $expected = new \stdClass();

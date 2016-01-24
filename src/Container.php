@@ -11,9 +11,7 @@ use Zend\ServiceManager\ServiceManager;
  * @author Alejandro Celaya Alastrué
  * @link http://www.alejandrocelaya.com
  */
-class Container extends Set implements
-    ServiceManagerAwareInterface,
-    SlimContainerConsumibleInterface
+class Container extends Set implements SlimContainerConsumibleInterface
 {
     /**
      * @var ServiceManager
@@ -23,7 +21,8 @@ class Container extends Set implements
     public function __construct(ServiceManager $sm = null)
     {
         parent::__construct();
-        $this->setServiceManager($sm ?: new ServiceManager());
+        $this->sm = $sm ?: new ServiceManager();
+        $this->sm->setAllowOverride(true);
     }
 
     /**
@@ -128,24 +127,6 @@ class Container extends Set implements
         } else {
             $this->sm->setService($key, $value);
         }
-    }
-
-    /**
-     * @param ServiceManager $sm
-     * @return mixed
-     */
-    public function setServiceManager(ServiceManager $sm)
-    {
-        $this->sm = $sm;
-        $this->sm->setAllowOverride(true);
-    }
-
-    /**
-     * @return ServiceManager
-     */
-    public function getServiceManager()
-    {
-        return $this->sm;
     }
 
     /**
