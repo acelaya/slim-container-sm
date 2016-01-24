@@ -7,13 +7,15 @@
 [![Total Downloads](https://poser.pugx.org/acelaya/slim-container-sm/downloads.png)](https://packagist.org/packages/acelaya/slim-container-sm)
 [![License](https://poser.pugx.org/acelaya/slim-container-sm/license.png)](https://packagist.org/packages/acelaya/slim-container-sm)
 
-A Slim framework container wrapping a ZF2 ServiceManager so that services can be fetched from it.
+A Slim framework v2 container wrapping a Zend ServiceManager v3 so that services can be fetched from it.
+
+> Current stable release depends on version 3 of the ServiceManager. If you need to use the version 2, install v1 of this component.
 
 ### Installation
 
 Install it with composer. Just run this.
 
-    composer require acelaya/slim-container-sm:~0.1
+    composer require acelaya/slim-container-sm
 
 ### Usage
 
@@ -24,26 +26,28 @@ By replacing Slim's container object by this one you can make Slim framework to 
 ```php
 use Acelaya\SlimContainerSm\Container;
 use Slim\Slim;
-use Vendor\AnotherClass;
 use Vendor\ComplexClass;
-use Vendor\MyClass;
-use Zend\ServiceManager\Config;
+use Vendor\MyAbstractFactory;
+use Zend\ServiceManager\Factory\InvokableFactory;
 use Zend\ServiceManager\ServiceManager;
 
 // Create a ServiceManager that is going to be used by the application and add some services to it
-$sm = new ServiceManager(new Config([
-    'invokables' => [
-        'foo' => MyClass::class,
-        'bar' => AnotherClass::class,
-    ],
+$sm = new ServiceManager([
     'factories' => [
         'complex_service' => function ($sm) {
             // Do stuff...
             
             return new ComplexClass();
-        }
+        },
+        'foo_invokable' => InvokableFactory::class,
+    ],
+    'abstract_factories' => [
+        MyAbstractFactory::class
+    ],
+    'aliases' => [
+        'foo' => 'foo_invokable'
     ]
-]));
+]);
 // Inject the ServiceManager in the new container
 $container = new Container($sm);
 
@@ -61,4 +65,6 @@ This library is very useful with [rka-slim-controller](https://github.com/akraba
 
 ### Invalid methods
 
-Because of the way the ServiceManager works, there is one method in `Slim\Helper\Set` that can't be used, the method `all`. That method will throw a `Acelaya\SlimContainerSm\Exception\BadMethodCallException`.
+Because of the way the ServiceManager works, there are methods in `Slim\Helper\Set` that can't be used. These are the methods `all`, `keys`, `count` and `getIterator`.
+Those methods will throw a `Acelaya\SlimContainerSm\Exception\BadMethodCallException`.
+This makes the `Acelaya\SlimContainerSm\Container` not iterable.
