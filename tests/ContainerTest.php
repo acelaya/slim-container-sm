@@ -63,18 +63,6 @@ class ContainerTest extends TestCase
         $this->container->all();
     }
 
-    public function testKeys()
-    {
-        $this->sm->setService('foo', new \stdClass());
-        $this->sm->setService('bar', new \stdClass());
-        $this->sm->setService('baz', new \stdClass());
-        $this->assertCount(3, $this->container->keys());
-
-        $this->sm->setInvokableClass('foobar', 'stdClass');
-        $this->sm->setInvokableClass('barfoo', 'stdClass');
-        $this->assertCount(5, $this->container->keys());
-    }
-
     public function testHas()
     {
         $this->assertFalse($this->container->has('foo'));
@@ -101,23 +89,28 @@ class ContainerTest extends TestCase
         $this->assertFalse($this->container->has('bar'));
     }
 
-    public function testCount()
+    /**
+     * @expectedException \Acelaya\SlimContainerSm\Exception\BadMethodCallException
+     */
+    public function testCountThrowsException()
     {
-        $this->container->foo = new \stdClass();
-        $this->container->bar = new \stdClass();
-        $this->sm->setService('baz', new \stdClass());
-        $this->sm->setAlias('alias', 'baz');
-        $this->sm->setFactory('factory', function ($sm) {
-
-        });
-        $this->assertCount(5, $this->container);
+        $this->container->count();
     }
 
-    public function testGetIterator()
+    /**
+     * @expectedException \Acelaya\SlimContainerSm\Exception\BadMethodCallException
+     */
+    public function testkeysThrowsException()
+    {
+        $iterator = $this->container->keys();
+    }
+
+    /**
+     * @expectedException \Acelaya\SlimContainerSm\Exception\BadMethodCallException
+     */
+    public function testGetIteratorThrowsException()
     {
         $iterator = $this->container->getIterator();
-        $this->assertInstanceOf('ArrayIterator', $iterator);
-        $this->assertCount(0, $iterator);
     }
 
     public function testSignleton()
@@ -149,7 +142,7 @@ class ContainerTest extends TestCase
         $anoterContainer->singleton('foobar', function ($c) {
             return 'Hello';
         });
-        $anoterContainer->barfoo = [$this, 'fakeMathod'];
+        $anoterContainer->barfoo = [$this, 'fakeMethod'];
         $this->container->consumeSlimContainer($anoterContainer);
 
         $this->assertTrue($this->sm->has('foo'));
@@ -164,8 +157,7 @@ class ContainerTest extends TestCase
         $this->assertTrue($this->container->has('barfoo'));
     }
 
-    public function fakeMathod()
+    public function fakeMethod()
     {
-
     }
 }

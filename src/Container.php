@@ -21,6 +21,11 @@ class Container extends Set implements SlimContainerConsumibleInterface
     public function __construct(ServiceManager $sm = null)
     {
         parent::__construct();
+        $this->initServiceManager($sm);
+    }
+
+    protected function initServiceManager(ServiceManager $sm = null)
+    {
         $this->sm = $sm ?: new ServiceManager();
         $this->sm->setAllowOverride(true);
     }
@@ -65,7 +70,7 @@ class Container extends Set implements SlimContainerConsumibleInterface
      */
     public function keys()
     {
-        return array_values($this->sm->getCanonicalNames());
+        throw new BadMethodCallException('It is not possible to get service names registered in a ServiceManager');
     }
 
     /**
@@ -92,10 +97,7 @@ class Container extends Set implements SlimContainerConsumibleInterface
      */
     public function clear()
     {
-        $services = $this->keys();
-        foreach ($services as $service) {
-            $this->set($service, null);
-        }
+        $this->initServiceManager();
     }
 
     /**
@@ -103,7 +105,7 @@ class Container extends Set implements SlimContainerConsumibleInterface
      */
     public function count()
     {
-        return count($this->keys());
+        throw new BadMethodCallException('It is not possible to count the number of services in a ServiceManager');
     }
 
     /**
@@ -111,7 +113,7 @@ class Container extends Set implements SlimContainerConsumibleInterface
      */
     public function getIterator()
     {
-        return new \ArrayIterator($this->keys());
+        throw new BadMethodCallException('It is not possible to generate an iterator from a ServiceManager');
     }
 
     /**
