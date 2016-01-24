@@ -16,8 +16,8 @@
         "dependency injection"
     ],
     "require": {
-        "php": ">=5.5.0",
-        "zendframework/zend-servicemanager": "~2.2",
+        "php": "^5.5|^7.0",
+        "zendframework/zend-servicemanager": "~3.0",
         "slim/slim": "~2.4"
     },
     "require-dev": {
